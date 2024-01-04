@@ -1,16 +1,16 @@
 package handlers
 
 import (
+	"github.com/jdonahue135/bookings-app/pkg/config"
+	"github.com/jdonahue135/bookings-app/pkg/models"
+	"github.com/jdonahue135/bookings-app/pkg/render"
 	"net/http"
-
-	"github.com/jdonahue135/bookings/pkg/config"
-	"github.com/jdonahue135/bookings/pkg/models"
-	"github.com/jdonahue135/bookings/pkg/render"
 )
 
-// Repo is the repository used by the handlers
+// Repo the repository used by the handlers
 var Repo *Repository
 
+// Repository is the repository type
 type Repository struct {
 	App *config.AppConfig
 }
@@ -22,12 +22,12 @@ func NewRepo(a *config.AppConfig) *Repository {
 	}
 }
 
-// NeHandlers sets the repository for the handlers
+// NewHandlers sets the repository for the handlers
 func NewHandlers(r *Repository) {
 	Repo = r
 }
 
-// Home is our Home page handler
+// Home is the handler for the home page
 func (m *Repository) Home(w http.ResponseWriter, r *http.Request) {
 	remoteIP := r.RemoteAddr
 	m.App.Session.Put(r.Context(), "remote_ip", remoteIP)
@@ -35,13 +35,16 @@ func (m *Repository) Home(w http.ResponseWriter, r *http.Request) {
 	render.RenderTemplate(w, "home.page.tmpl", &models.TemplateData{})
 }
 
-// About is our About page handler
+// About is the handler for the about page
 func (m *Repository) About(w http.ResponseWriter, r *http.Request) {
+	// perform some logic
 	stringMap := make(map[string]string)
-	stringMap["test"] = "Hello, again."
+	stringMap["test"] = "Hello, again"
 
 	remoteIP := m.App.Session.GetString(r.Context(), "remote_ip")
 	stringMap["remote_ip"] = remoteIP
+
+	// send data to the template
 	render.RenderTemplate(w, "about.page.tmpl", &models.TemplateData{
 		StringMap: stringMap,
 	})
