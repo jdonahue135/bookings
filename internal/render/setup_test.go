@@ -17,7 +17,8 @@ var session *scs.SessionManager
 var testApp config.AppConfig
 
 func TestMain(m *testing.M) {
-	// what will we put in the session
+
+	// what am I going to put in the session
 	gob.Register(models.Reservation{})
 
 	// change this to true when in production
@@ -29,12 +30,11 @@ func TestMain(m *testing.M) {
 	errorLog := log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 	testApp.ErrorLog = errorLog
 
-	// set up the session
 	session = scs.New()
 	session.Lifetime = 24 * time.Hour
 	session.Cookie.Persist = true
 	session.Cookie.SameSite = http.SameSiteLaxMode
-	session.Cookie.Secure = testApp.InProduction
+	session.Cookie.Secure = false
 
 	testApp.Session = session
 
@@ -45,15 +45,16 @@ func TestMain(m *testing.M) {
 
 type myWriter struct{}
 
-func (tw myWriter) Header() http.Header {
+func (tw *myWriter) Header() http.Header {
 	var h http.Header
 	return h
 }
 
-func (tw myWriter) WriteHeader(i int) {
+func (tw *myWriter) WriteHeader(i int) {
+
 }
 
-func (tw myWriter) Write(b []byte) (int, error) {
+func (tw *myWriter) Write(b []byte) (int, error) {
 	length := len(b)
 	return length, nil
 }
