@@ -271,7 +271,7 @@ func TestRepository_PostReservation(t *testing.T) {
 	postedData.Add("last_name", "Smith")
 	postedData.Add("email", "john@smith.ca")
 	postedData.Add("phone", "1234567890")
-	postedData.Add("room_id", "1000")
+	postedData.Add("room_id", "2")
 
 	req, _ = http.NewRequest("POST", "/make-reservation", strings.NewReader(postedData.Encode()))
 	ctx = getCtx(req)
@@ -284,7 +284,7 @@ func TestRepository_PostReservation(t *testing.T) {
 	handler.ServeHTTP(rr, req)
 
 	if rr.Code != http.StatusTemporaryRedirect {
-		t.Errorf("PostReservation handler failed when trying to fail inserting reservation: got %d, wanted %d", rr.Code, http.StatusTemporaryRedirect)
+		t.Errorf("PostReservation handler failed when trying to fail inserting restriction: got %d, wanted %d", rr.Code, http.StatusTemporaryRedirect)
 	}
 }
 
