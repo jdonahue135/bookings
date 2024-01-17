@@ -158,6 +158,12 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	_, err = m.DB.SearchAvailabilityByDatesByRoomID(startDate, endDate, roomID)
+	if err != nil {
+		m.App.Session.Put(r.Context(), "error", "room is unavailable!")
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
+	}
 	newReservationID, err := m.DB.InsertReservation(reservation)
 	if err != nil {
 		m.App.Session.Put(r.Context(), "error", "can't insert reservation into database!")
